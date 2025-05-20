@@ -1,8 +1,8 @@
 import {Response} from "express"
-
-//import { body} from "express-validator"
 const {body} = require("express-validator")
+
 const validateCreateAccountReq  = [
+
     body('userName').notEmpty().trim().withMessage('pls send user name') ,
     body('userName').isLength({min : 5 , max : 30}).withMessage('userName size should be between 5 and 30') ,
     
@@ -10,9 +10,10 @@ const validateCreateAccountReq  = [
     body('userEmail').isEmail().trim().withMessage('pls send valid email') ,
     
     body('userPassword').notEmpty().withMessage('pls send user password') ,
-    body('userPassword').isLength({min : 5 , max : 30}).trim().withMessage('userName size should be between 5 and 30') ,
+    body('userPassword').isLength({min : 5 , max : 30}).trim().withMessage('userPassword size should be between 5 and 30') ,
     
 ]
+
 const validateUserLoginReq  = [
    
     body('userEmail').notEmpty().withMessage('pls send user email') ,

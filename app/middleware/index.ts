@@ -41,5 +41,26 @@ function wrongPath(  req : Request , res : Response  , next :NextFunction ){
     }
 }
 
+  
+function authenticateUser(req : Request  , res : Response , next : NextFunction){
+    const authHeader = req?.headers?.authorization
+   
+    const token = authHeader?.split(" ")?.[1] as string
 
-export {defaultErr , checkAuth , wrongPath}
+    if(!authHeader || !authHeader.startsWith('Bearer ')){
+        throw new CustomError("unauthorized, pls enter valid token" , 400)
+    }
+  
+    try{
+        const jwtPayload = jwt.verify(token , SECRET_KEY)  
+        req.body.user = jwtPayload 
+    }
+    catch(error){
+        throw new CustomError("invalid Token" , 400)
+    }  
+    
+    next()
+}
+
+
+export {defaultErr , wrongPath , authenticateUser}

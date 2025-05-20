@@ -38,7 +38,7 @@ async function HandelCreateUserAccount(req : Request , res : Response , next : N
         //making jwt
         const tokenToSend = jwt.sign( dataTOMakeToken , SECRET_KEY ,{expiresIn : '10m'})
 
-        defaultRes(res , 200 , "account created successfully" , tokenToSend)       
+        defaultRes(res , 200 , "user registered successfully" , null)       
         
     }
     catch(error){
@@ -83,7 +83,7 @@ async function HandelUserLogin(req : Request , res : Response , next : NextFunct
         } 
         const tokenToSend = jwt.sign( dataTOMakeToken , SECRET_KEY ,{expiresIn : '10m'})
 
-        defaultRes(res , 200 , "account logged in , token generated" , tokenToSend)
+        defaultRes(res , 200 , "account logged in , token generated" , {token : tokenToSend})
 
         
     }
