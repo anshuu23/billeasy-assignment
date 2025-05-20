@@ -4,8 +4,10 @@ dotenv.config()
 //exporting all environment variables from one place
 function getEnvVariables(){
     const PORT = process.env.PORT
+    const SECRET_KEY = process.env.SECRET_KEY
     return {
-        PORT 
+        PORT,
+        SECRET_KEY
     }
 }
 

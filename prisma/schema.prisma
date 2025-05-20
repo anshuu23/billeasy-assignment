@@ -16,9 +16,9 @@ datasource db {
 
 model User {
   id           String   @id @default(uuid())
-  username     String   @unique
-  email        String   @unique
-  passwordHash String
+  userName     String   @unique
+  userEmail        String   @unique
+  userPassword String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   reviews      Review[]

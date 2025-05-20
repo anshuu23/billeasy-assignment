@@ -1,5 +1,8 @@
 import express from "express"
 import { getEnvVariables } from "./getEnv"
+import router from "./app/routes"
+import cors from 'cors'
+import { defaultErr, wrongPath } from "./app/middleware"
 const PORT = getEnvVariables().PORT
 
 
@@ -9,10 +12,9 @@ app.use(cors())
 app.use(express.json())
 app.use('/' , router)
 
+router.use(wrongPath)
+router.use(defaultErr)
+
 app.listen(PORT , ()=>{
     console.log(`server is listening on port ${PORT}`)
 })
-
-function cors(): any {
-    throw new Error("Function not implemented.")
-}
