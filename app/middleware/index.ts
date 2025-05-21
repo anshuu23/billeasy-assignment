@@ -39,9 +39,9 @@ function handleInvalidRoute(  req : Request , res : Response  , next :NextFuncti
 
         const error = new PathDosentExistError('path does no exist , go home' , 404)
          
-        next(error); // Pass the error to the error handler
+        next(error);
     } else {
-        next(); // Continue without modifying the response
+        next(); 
     }
 }
 
