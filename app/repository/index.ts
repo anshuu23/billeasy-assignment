@@ -60,6 +60,36 @@ async function getBooks(skip: number, orderByy: string, sortIn: string, take: nu
     return { count, data }
 }
 
+async function getBooksById(id : string,skip: number, take: number) {
+
+   const averageRating = await prisma.review.aggregate({
+      where: { bookId:id },
+      _avg: { rating: true },
+    });
+
+    // Get paginated reviews
+    const reviews = await prisma.review.findMany({
+      where: { bookId: id },
+      skip,
+      take,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: { select: { userName: true } }, // If you want to show who reviewed
+      },
+    });
+
+
+    return { averageRating, reviews }
+}
+
+async function isBookExist(id : string) {
+   return await prisma.book.findUnique({
+        where: {
+            id
+        },
+    })
+}
+
 async function isReviewExist(bookId: string, userId: string) {
 
     return await prisma.review.findUnique({
@@ -112,4 +142,11 @@ async function deleteReview(bookId: string, userId: string) {
     })
 }
 
-export { createAccount, isUserExist, addBook, getBooks, addReview, isReviewExist , updateReview , deleteReview }
+async function searchBooks(whereClause : any) {
+
+    return await prisma.book.findMany({
+        where:whereClause
+    })
+}
+
+export { createAccount, isUserExist, addBook, getBooks, addReview, isReviewExist , updateReview , deleteReview , searchBooks , getBooksById , isBookExist}

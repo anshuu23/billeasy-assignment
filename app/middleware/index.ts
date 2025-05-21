@@ -29,7 +29,7 @@ function defaultErr(err : any ,  req : Request , res : Response  , next :NextFun
 }
 
 
-function wrongPath(  req : Request , res : Response  , next :NextFunction ){
+function handleInvalidRoute(  req : Request , res : Response  , next :NextFunction ){
     
     if (!res.headersSent) {
 
@@ -63,4 +63,4 @@ function authenticateUser(req : Request  , res : Response , next : NextFunction)
 }
 
 
-export {defaultErr , wrongPath , authenticateUser}
+export {defaultErr , handleInvalidRoute , authenticateUser}

@@ -1,4 +1,5 @@
 import {Response} from "express"
+import { param } from "express-validator"
 const {body} = require("express-validator")
 
 const validateCreateAccountReq  = [
@@ -32,11 +33,16 @@ const validateAddBooksReq  = [
 
 ]
 
-const validateGetBooksReq  = [
-   
-    body('title').notEmpty().trim().withMessage('pls send title') ,
-    body('author').notEmpty().trim().withMessage('pls send author') ,
-    body('genre').notEmpty().trim().withMessage('pls send genre') ,
+const validateGetBooksWithIdReq  = [
+
+    param('id').notEmpty().trim().withMessage('pls send book id') ,
+
+]
+const validatepostReview  = [
+
+    param('id').notEmpty().trim().withMessage('pls send book id') ,
+    body('rating').notEmpty().trim().withMessage('pls send rating') ,
+    body('reviewText').notEmpty().trim().withMessage('pls send reviewText') ,
 
 ]
 
@@ -83,4 +89,4 @@ class PathDosentExistError extends Error {
 
 
 
-export  {validateCreateAccountReq , validateUserLoginReq , validateAddBooksReq , defaultRes , CustomError, PathDosentExistError }
+export  {validateCreateAccountReq , validateUserLoginReq , validateAddBooksReq ,validateGetBooksWithIdReq , validatepostReview , defaultRes , CustomError, PathDosentExistError }

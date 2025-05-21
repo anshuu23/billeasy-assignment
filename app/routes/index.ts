@@ -1,5 +1,5 @@
 import express from "express";
-import { validateAddBooksReq, validateCreateAccountReq , validateUserLoginReq} from "../util";
+import { validateAddBooksReq, validateCreateAccountReq , validateGetBooksWithIdReq, validatepostReview, validateUserLoginReq} from "../util";
 import { UserController , BooksController } from "../controller";
 import { authenticateUser } from "../middleware";
 
@@ -13,12 +13,14 @@ router.post('/books' , validateAddBooksReq, authenticateUser, BooksController.Ha
 
 router.get('/books' , BooksController.handelGetAllBooks)
 
-router.get('/books:id' , BooksController.handelGetBookBasedOnId)
+router.get('/books/:id' ,validateGetBooksWithIdReq, BooksController.handelGetBookBasedOnId)
 
-router.post('/books/:id/reviews' , authenticateUser, BooksController.handelAddReview)
+router.post('/books/:id/reviews' ,validatepostReview, authenticateUser, BooksController.handelAddReview)
 
 router.put('/books/reviews/:id' , authenticateUser, BooksController.handelUpdateReview)
 
 router.delete('/reviews/:id' , authenticateUser, BooksController.handelUpdateReview)
+
+router.get('/search' , BooksController.handelSearchBooks)
 
 export default router
