@@ -42,7 +42,7 @@
     npm start
 
 ## Postman Requests
-    postman collection json file is present in root folder
+   [Download Postman Collection](./Bill-easy-assignment.postman_collection.json)
 
 # schemas
 ![Home Page Screenshot](./images/schema.png)
