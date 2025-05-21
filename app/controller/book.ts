@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { defaultRes, CustomError } from "../util";
 import { checkValidation, hashPassword, unHashPassword } from "../helper";
-import { addBook, createAccount, getBooks, isUserExist } from "../repository";
+import { addBook, addReview, createAccount, deleteReview, getBooks, isReviewExist, isUserExist, updateReview } from "../repository";
 import jwt from "jsonwebtoken"
 import { getEnvVariables } from "../../getEnv";
 import { UUID } from "crypto";
@@ -73,16 +73,53 @@ async function handelGetAllBooks(req: Request, res: Response, next: NextFunction
 
 async function handelGetBookBasedOnId(req: Request, res: Response, next: NextFunction) {
 
+    // try {
+
+    //     //to check if express-validator have send some err
+    //     checkValidation(req)
+
+    //     const { id }: { id: UUID } = req.params;
+
+    //     const addBookRes = await addBook(title, author, genre)
+
+    //     defaultRes(res, 200, "new book added successfully", addBookRes)
+
+    // }
+    // catch (error) {
+    //     console.log(error)
+
+    //     //sending err in next() so it will catch in default err middleware in main index file
+    //     next(error)
+    // }
+
+}
+
+async function handelAddReview(req: Request, res: Response, next: NextFunction) {
+
     try {
 
         //to check if express-validator have send some err
         checkValidation(req)
 
-        const { id }: {id : UUID} = req.params;
+        const {  rating, reviewText } = req.body as {
+            rating: string,
+            reviewText: string,
+        };
+        const userId : string = req.body.user.userId
 
-        const addBookRes = await addBook(title, author, genre)
+        const parsedRating = parseInt(rating)
 
-        defaultRes(res, 200, "new book added successfully", addBookRes)
+        const BookId = req.params.id as string;
+
+        const isReviewExistRes = await isReviewExist(BookId , userId)
+
+        if(isReviewExistRes){
+            throw new CustomError("review to this book is alredy made" , 409)
+        }
+
+        const addBookRes = await addReview(BookId , userId, parsedRating, reviewText )
+
+        defaultRes(res, 200, "book review added successfully", addBookRes)
 
     }
     catch (error) {
@@ -94,4 +131,74 @@ async function handelGetBookBasedOnId(req: Request, res: Response, next: NextFun
 
 }
 
-export { HandelAddBook, handelGetAllBooks }
+async function handelUpdateReview(req: Request, res: Response, next: NextFunction) {
+
+    try {
+
+        //to check if express-validator have send some err
+        checkValidation(req)
+
+        const {  rating, reviewText } = req.body as {
+            rating: string,
+            reviewText: string,
+        };
+        const userId : string = req.body.user.userId
+
+        const parsedRating = parseInt(rating)
+
+        const BookId = req.params.id as string;
+
+        const isReviewExistRes = await isReviewExist(BookId , userId)
+
+        if(!isReviewExistRes){
+            throw new CustomError("review to this book havent made" , 409)
+        }
+
+
+        const addBookRes = await updateReview(BookId , userId, parsedRating, reviewText )
+
+        defaultRes(res, 200, "book review added successfully", addBookRes)
+
+    }
+    catch (error) {
+        console.log(error)
+
+        //sending err in next() so it will catch in default err middleware in main index file
+        next(error)
+    }
+
+}
+
+async function handelDeleteReview(req: Request, res: Response, next: NextFunction) {
+
+    try {
+
+        //to check if express-validator have send some err
+        checkValidation(req)
+
+        const userId : string = req.body.user.userId
+
+        const BookId = req.params.id as string;
+
+        const isReviewExistRes = await isReviewExist(BookId , userId)
+
+        if(!isReviewExistRes){
+            throw new CustomError("cant delete review as it does not exist" , 409)
+        }
+
+        const addBookRes = await deleteReview(BookId , userId)
+
+        defaultRes(res, 200, "review deleted successfully", addBookRes)
+
+    }
+    catch (error) {
+        console.log(error)
+
+        //sending err in next() so it will catch in default err middleware in main index file
+        next(error)
+    }
+
+}
+
+export { HandelAddBook, handelGetAllBooks, handelGetBookBasedOnId, handelAddReview , handelUpdateReview , handelDeleteReview}
+

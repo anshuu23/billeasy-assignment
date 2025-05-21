@@ -15,4 +15,10 @@ router.get('/books' , BooksController.handelGetAllBooks)
 
 router.get('/books:id' , BooksController.handelGetBookBasedOnId)
 
+router.post('/books/:id/reviews' , authenticateUser, BooksController.handelAddReview)
+
+router.put('/books/reviews/:id' , authenticateUser, BooksController.handelUpdateReview)
+
+router.delete('/reviews/:id' , authenticateUser, BooksController.handelUpdateReview)
+
 export default router
