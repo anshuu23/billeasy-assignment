@@ -5,7 +5,6 @@ import cors from 'cors'
 import { defaultErr, wrongPath } from "./app/middleware"
 const PORT = getEnvVariables().PORT
 
-
 const app = express()
 
 app.use(cors())

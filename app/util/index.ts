@@ -11,7 +11,7 @@ const validateCreateAccountReq  = [
     
     body('userPassword').notEmpty().withMessage('pls send user password') ,
     body('userPassword').isLength({min : 5 , max : 30}).trim().withMessage('userPassword size should be between 5 and 30') ,
-    
+
 ]
 
 const validateUserLoginReq  = [
@@ -22,6 +22,22 @@ const validateUserLoginReq  = [
     body('userPassword').notEmpty().trim().withMessage('pls send user password') ,
     body('userPassword').isLength({min : 5 , max : 30}).withMessage('userName size should be between 5 and 30') ,
     
+]
+
+const validateAddBooksReq  = [
+   
+    body('title').notEmpty().trim().withMessage('pls send title') ,
+    body('author').notEmpty().trim().withMessage('pls send author') ,
+    body('genre').notEmpty().trim().withMessage('pls send genre') ,
+
+]
+
+const validateGetBooksReq  = [
+   
+    body('title').notEmpty().trim().withMessage('pls send title') ,
+    body('author').notEmpty().trim().withMessage('pls send author') ,
+    body('genre').notEmpty().trim().withMessage('pls send genre') ,
+
 ]
 
 //this function is used to response all apis so that response in send in same format
@@ -67,4 +83,4 @@ class PathDosentExistError extends Error {
 
 
 
-export  {validateCreateAccountReq , validateUserLoginReq , defaultRes , CustomError, PathDosentExistError }
+export  {validateCreateAccountReq , validateUserLoginReq , validateAddBooksReq , defaultRes , CustomError, PathDosentExistError }

@@ -30,5 +30,34 @@ async function isUserExist( userEmail : string ){
     })
 }
 
+async function addBook(title : string , author : string , genre : string){
 
-export {createAccount , isUserExist }
+    return await prisma.book.create({
+        data:{
+            title ,
+            author,
+            genre
+        },
+    })
+}
+
+
+ async function getBooks(skip: number, orderByy: string, sortIn: string, take: number , whereClause : any) {
+
+    console.log('-------' ,  skip , orderByy , sortIn , take , whereClause )
+    const count = await prisma.book.count({
+        where : whereClause
+    })
+    const data = await prisma.book.findMany({
+        skip,
+        take,
+        orderBy: {
+            [orderByy]: sortIn
+        },
+        where : whereClause
+    })
+
+    return { count , data }
+}
+
+export {createAccount , isUserExist , addBook , getBooks}
