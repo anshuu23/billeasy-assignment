@@ -43,6 +43,9 @@ const validatepostReview  = [
     param('id').notEmpty().trim().withMessage('pls send book id') ,
     body('rating').notEmpty().trim().withMessage('pls send rating') ,
     body('reviewText').notEmpty().trim().withMessage('pls send reviewText') ,
+]
+const validateDeleteReview  = [
+    param('id').notEmpty().trim().withMessage('pls send review id') ,
 
 ]
 
@@ -89,4 +92,4 @@ class PathDosentExistError extends Error {
 
 
 
-export  {validateCreateAccountReq , validateUserLoginReq , validateAddBooksReq ,validateGetBooksWithIdReq , validatepostReview , defaultRes , CustomError, PathDosentExistError }
+export  {validateCreateAccountReq , validateUserLoginReq , validateAddBooksReq ,validateGetBooksWithIdReq , validatepostReview ,validateDeleteReview , defaultRes , CustomError, PathDosentExistError }

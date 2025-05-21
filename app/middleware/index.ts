@@ -1,9 +1,16 @@
 import {  Response , Request , NextFunction  } from "express";
 import { CustomError  } from "../util";
-import { json } from "stream/consumers";
-import { defaultRes , PathDosentExistError } from "../util";
+import { PathDosentExistError } from "../util";
 import  jwt  from "jsonwebtoken";
 import { getEnvVariables } from "../../getEnv";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any 
+    }
+  }
+}
 
 const SECRET_KEY = getEnvVariables().SECRET_KEY as string
 
@@ -23,9 +30,6 @@ function defaultErr(err : any ,  req : Request , res : Response  , next :NextFun
             error: 'Internal Server Error'
         });
     }
-
-    // console.log("err came in default err fun" , err)
-    // res.status(401).json({ error : err })
 }
 
 
@@ -53,9 +57,9 @@ function authenticateUser(req : Request  , res : Response , next : NextFunction)
   
     try{
         const jwtPayload = jwt.verify(token , SECRET_KEY)  
-        req.body.user = jwtPayload 
+        req.user = jwtPayload 
     }
-    catch(error){
+    catch(error){       
         throw new CustomError("invalid Token" , 400)
     }  
     

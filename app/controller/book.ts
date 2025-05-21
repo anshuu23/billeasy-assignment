@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { defaultRes, CustomError } from "../util";
 import { checkValidation } from "../helper";
-import { addBook, addReview , deleteReview, getBooks, getBooksById, isBookExist, isReviewExist, searchBooks, updateReview } from "../repository";
-import { getEnvVariables } from "../../getEnv";
-;
-
-const SECRET_KEY = getEnvVariables().SECRET_KEY as string
+import { addBook, addReview, deleteReview, getBooks, getBooksById, isBookExist, isReviewExist, searchBooks, updateReview } from "../repository";
 
 // Function to create an account. First, it checks if the user already exists — if yes, it does not create the account. If the user does not exist, it proceeds to create the account.
 async function HandelAddBook(req: Request, res: Response, next: NextFunction) {
@@ -31,7 +27,7 @@ async function HandelAddBook(req: Request, res: Response, next: NextFunction) {
 
 }
 
-
+//allows sorting and pagination
 async function handelGetAllBooks(req: Request, res: Response, next: NextFunction) {
     try {
 
@@ -54,8 +50,6 @@ async function handelGetAllBooks(req: Request, res: Response, next: NextFunction
         if (author) whereClause.author = author;
         if (genre) whereClause.genre = genre;
         orderBy ? orderBy : 'id'
-
-        console.log('hiiii--------', orderBy, sortInn)
 
         const getBooksRes = await getBooks(isNaN(skip) ? 0 : skip, orderBy ?? 'title', sortInn ?? 'asc', isNaN(parsedTake) ? 10 : parsedTake, whereClause)
 
@@ -81,14 +75,14 @@ async function handelGetBookBasedOnId(req: Request, res: Response, next: NextFun
 
         const isBookExistRes = await isBookExist(bookId)
 
-        if(!isBookExistRes){
-            throw new CustomError("book with this id does not exist" , 404)
+        if (!isBookExistRes) {
+            throw new CustomError("book with this id does not exist", 404)
         }
-        const { currentPage, take,  } = req.query as {
-            currentPage: string;      
-            take: string;   
+        const { currentPage, take, } = req.query as {
+            currentPage: string;
+            take: string;
         };
-        
+
         let parsedTake = Number(take)
 
         let parsedCurrentPage = Number(currentPage);
@@ -98,9 +92,9 @@ async function handelGetBookBasedOnId(req: Request, res: Response, next: NextFun
         const getBooksByIdRes = await getBooksById(bookId, isNaN(skip) ? 0 : skip, isNaN(parsedTake) ? 10 : parsedTake)
 
         const dataToSend = {
-            book : isBookExistRes,
-            rating : getBooksByIdRes.averageRating._avg.rating ,
-            reviews : getBooksByIdRes.reviews
+            book: isBookExistRes,
+            rating: getBooksByIdRes.averageRating._avg.rating,
+            reviews: getBooksByIdRes.reviews
         }
 
         defaultRes(res, 200, "data retrived successfully", dataToSend)
@@ -108,8 +102,6 @@ async function handelGetBookBasedOnId(req: Request, res: Response, next: NextFun
     }
     catch (error) {
         console.log(error)
-
-        //sending err in next() so it will catch in default err middleware in main index file
         next(error)
     }
 
@@ -126,7 +118,7 @@ async function handelAddReview(req: Request, res: Response, next: NextFunction) 
             rating: string,
             reviewText: string,
         };
-        const userId: string = req.body.user.userId
+        const userId: string = req.user.userId
 
         const parsedRating = parseInt(rating)
 
@@ -163,7 +155,7 @@ async function handelUpdateReview(req: Request, res: Response, next: NextFunctio
             rating: string,
             reviewText: string,
         };
-        const userId: string = req.body.user.userId
+        const userId: string = req.user.userId
 
         const parsedRating = parseInt(rating)
 
@@ -178,7 +170,7 @@ async function handelUpdateReview(req: Request, res: Response, next: NextFunctio
 
         const addBookRes = await updateReview(BookId, userId, parsedRating, reviewText)
 
-        defaultRes(res, 200, "book review added successfully", addBookRes)
+        defaultRes(res, 200, "book review updated successfully", addBookRes)
 
     }
     catch (error) {
@@ -197,15 +189,21 @@ async function handelDeleteReview(req: Request, res: Response, next: NextFunctio
         //to check if express-validator have send some err
         checkValidation(req)
 
-        const userId: string = req.body.user.userId
+        const userId: string = req.user.userId
 
         const BookId = req.params.id as string;
 
+        console.log(BookId , userId)
         const isReviewExistRes = await isReviewExist(BookId, userId)
 
         if (!isReviewExistRes) {
-            throw new CustomError("cant delete review as it does not exist", 409)
+            throw new CustomError("Review not found", 404);
         }
+
+        if (isReviewExistRes.userId !== userId) {
+            throw new CustomError("You cannot delete someone else's review", 403);
+        }
+
 
         const addBookRes = await deleteReview(BookId, userId)
 
@@ -250,7 +248,7 @@ async function handelSearchBooks(req: Request, res: Response, next: NextFunction
         }
 
         console.log(whereClause)
-        console.log(title , author)
+        console.log(title, author)
         const searchBooksRes = await searchBooks(whereClause)
 
         defaultRes(res, 200, "data retrived successfully", searchBooksRes)

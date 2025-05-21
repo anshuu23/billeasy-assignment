@@ -1,5 +1,5 @@
 import express from "express";
-import { validateAddBooksReq, validateCreateAccountReq , validateGetBooksWithIdReq, validatepostReview, validateUserLoginReq} from "../util";
+import { validateAddBooksReq, validateCreateAccountReq , validateDeleteReview, validateGetBooksWithIdReq, validatepostReview, validateUserLoginReq} from "../util";
 import { UserController , BooksController } from "../controller";
 import { authenticateUser } from "../middleware";
 
@@ -17,9 +17,9 @@ router.get('/books/:id' ,validateGetBooksWithIdReq, BooksController.handelGetBoo
 
 router.post('/books/:id/reviews' ,validatepostReview, authenticateUser, BooksController.handelAddReview)
 
-router.put('/books/reviews/:id' , authenticateUser, BooksController.handelUpdateReview)
+router.put('/books/reviews/:id' , validatepostReview ,authenticateUser, BooksController.handelUpdateReview)
 
-router.delete('/reviews/:id' , authenticateUser, BooksController.handelUpdateReview)
+router.delete('/reviews/:id' ,validateDeleteReview, authenticateUser, BooksController.handelDeleteReview)
 
 router.get('/search' , BooksController.handelSearchBooks)
 
